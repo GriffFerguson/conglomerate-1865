@@ -98,6 +98,16 @@ app.ws("/dealer", (ws, req) => {
             cards += card;
         }
         ws.send(`{"type": "cardTick", "payload": "${cards.replace(/"/gm, "\\\"")}"}`);
+        var statCards = "";
+        var bids = [];
+        for (var asset of gameAssets_1.GameAssets) {
+            statCards += `<p>${asset.name}: $${asset.value}</p>`;
+            if (asset.bid != null) {
+                bids.push([asset.name, asset.bid[0], asset.bid[1], asset.bid[2]]);
+            }
+        }
+        ws.send(`{"type": "statsTick", "payload": "${statCards.replace(/"/gm, "\\\"")}"}`);
+        ws.send(`{"type": "bids", "payload": "${JSON.stringify(bids)}"}`);
         var balances = "{";
         for (var player of Players.Players) {
             balances += `"${player[0]}": ${Math.round(player[1].balance * 100) / 100},`;
@@ -111,7 +121,7 @@ app.ws("/dealer", (ws, req) => {
             gameAssets_1.GameAssets[i].value += gameAssets_1.GameAssets[i].trend * gameAssets_1.GameAssets[i].size * (10000 + (Math.random() * 1000000));
             // Give investors some income
             for (var investor of gameAssets_1.GameAssets[i].investors) {
-                Players.Players.get(investor).balance += gameAssets_1.GameAssets[i].value * (Math.random() * .25);
+                Players.Players.get(investor).balance += gameAssets_1.GameAssets[i].value * (Math.random() * .05);
             }
             // Recurring payment for workers
             if (gameAssets_1.GameAssets[i].owner != "") {
