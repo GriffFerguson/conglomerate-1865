@@ -9,10 +9,20 @@
 </head>
 <body>
     <h1>Conglomerate 1865</h1>
-    <div id="join-info">
-        <p>Pull out your phones or Chromebooks!</p>
-        <p>Visit <b><ins>http://{ADDRESS}:{PORT}</ins></b> or scan the QR Code below</p>
-        <img id="join-qr" src="{QRCODE}" alt="join QR code">
+    <div id="splitscreen">
+        <div id="join-info">
+            <p>Pull out your phones or Chromebooks!</p>
+            <p>Visit <b><ins>http://{ADDRESS}:{PORT}</ins></b> or scan the QR Code below.</p>
+            <img id="join-qr" src="{QRCODE}" alt="join QR code">
+        </div>
+        <div id="joined">
+            <p>Waiting Room</p>
+        </div>
     </div>
+    <div id="start-info">
+        <p>Once everyone has joined, click "Start" to begin the game.</p>
+        <button id="start">Start</button>
+    </div>
+    
 </body>
 </html>

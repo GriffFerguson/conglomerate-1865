@@ -1,12 +1,18 @@
+#splitscreen {
+    margin: 0 5%;
+    display: grid;
+    grid-template-columns: 70% 30%;
+}
+
 #join-info {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin: 0 20%;
+    margin: 0 2%;
 }
 
-#join-info p {
+#splitscreen p {
     font-size: 1.7em;
     text-align: center;
 }
@@ -14,4 +20,22 @@
 #join-qr {
     margin: 1em;
     width: 18vw;
+}
+
+#start-info {
+    margin: 2vh 30%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#start {
+    background-color: var(--title-gold);
+    color:white;
+    font-family: "Sanchez";
+    font-size: 1em;
+    padding: 1em 3em;
+    border: none;
+    outline: none;
+    border-radius: 20%;
 }
