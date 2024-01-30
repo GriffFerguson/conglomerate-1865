@@ -28,7 +28,7 @@ p {
     margin: 0.2em;
 }
 
-button {
+button, input[type="submit"] {
     background-color: var(--title-gold);
     color:white;
     font-family: "Sanchez";
@@ -38,12 +38,44 @@ button {
     outline: none;
     border-radius: 20%;
     cursor: pointer;
+    width: min-content;
 }
 
-/* 
- * 
+#credit {
+    color:white;
+    font-family: "Sanchez";
+    font-size:0.7em;
+    position: absolute;
+    bottom:1vh;
+    left:1vw;
+}
+
+/* RESPONSIVENESS
+ * Designed on 2560x1440 screen
  */
 
+@media only screen and (max-width: 1000px) {
+    :root {
+        font-size: 16px;
+    }
+
+    h1 {
+        font-size: 4.7em;
+    }
+}
+
+@media only screen and (max-width: 500px) {
+    :root {
+        font-size: 12px;
+    }
+
+    h1 {
+        font-size: 3.8em;
+    }
+}
+
+
+/* FONTS */
 @font-face {
     font-family: "TexasTango";
     src: url(/static/fonts/texas_tango.otf);
