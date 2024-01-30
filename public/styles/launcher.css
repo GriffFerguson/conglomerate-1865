@@ -1,0 +1,17 @@
+#join-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 0 20%;
+}
+
+#join-info p {
+    font-size: 1.7em;
+    text-align: center;
+}
+
+#join-qr {
+    margin: 1em;
+    width: 18vw;
+}

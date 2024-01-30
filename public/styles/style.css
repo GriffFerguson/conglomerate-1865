@@ -1,0 +1,45 @@
+:root {
+    font-size: 20px;
+    --background: rgb(40,40,40);
+    --title-gold: rgb(183, 159, 55);
+}
+
+html, body {
+    margin:0;
+    padding:0;
+    background-color: var(--background);
+}
+
+h1 {
+    font-size: 6rem;
+    font-weight: bold;
+    font-family: "Buffalo", serif;
+    color: var(--title-gold);
+    letter-spacing: 0.12ch;
+    margin: 1.4vh 0;
+    width: 100vw;
+    text-align: center;
+}
+
+p {
+    color:white;
+    font-size: 1em;
+    font-family: "Sanchez", 'Times New Roman', serif;
+    margin: 0.2em;
+}
+
+@font-face {
+    font-family: "TexasTango";
+    src: url(/static/fonts/texas_tango.otf);
+    font-weight: bold;
+}
+
+@font-face {
+    font-family: "Buffalo";
+    src: url(/static/fonts/buffalo.ttf);
+}
+
+@font-face {
+    font-family: "Sanchez";
+    src: url(/static/fonts/Sanchez-Regular.ttf);
+}
