@@ -22,10 +22,15 @@
     height: 95vh;
     grid-template-columns: 25% 25% 25%;
     margin:2.5vh 2.5vw;
+    height: 60%;
 }
 
 .player-card {
     width:100%;
     border: 5px solid white;
     background-color: black;
+}
+
+#stats {
+    height: 40%;
 }

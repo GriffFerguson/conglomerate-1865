@@ -72,8 +72,6 @@
         const ws = new WebSocket("ws://{ADDRESS}:{PORT}/dealer");
 
         ws.onmessage = (msg) => {
-            console.log(msg.data)
-
             msg = JSON.parse(msg.data);
 
             if (msg.type == "balanceUpdate") {

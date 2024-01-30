@@ -81,19 +81,18 @@ app.ws("/dealer", (ws, req) => {
 
             var card = templates.playerCard({
                 name: player[0],
-                balance: player[1].balance,
+                balance: Math.round(player[1].balance * 100) / 100,
                 owned: owned,
                 invested: invested
             })
             cards += card;
         }
-        console.log(cards);
 
-        ws.send(`{"type": "cardTick", "payload": "${cards}"}`);
+        ws.send(`{"type": "cardTick", "payload": "${cards.replace(/"/gm, "\\\"")}"}`);
 
         var balances = "{";
         for (var player of Players.Players) {
-            balances += `"${player[0]}": ${Math.round(player[1].balance)},`;
+            balances += `"${player[0]}": ${Math.round(player[1].balance * 100) / 100},`;
         }
         balances = balances.replace(/.$/, "}");
         ws.send(`{"type": "balanceUpdate", "payload": ${balances}}`);
@@ -101,12 +100,12 @@ app.ws("/dealer", (ws, req) => {
         // OMG THE GAME CODE!!!!!!!
         for (var i = 0; i < GameAssets.length; i++) {
             // Determine new value
-            GameAssets[i].trend = (Math.random() * 4) - 2
+            GameAssets[i].trend = (Math.random() * 10) - 5
             GameAssets[i].value += GameAssets[i].trend * GameAssets[i].size * (10000 + (Math.random() * 1000000))
         
             // Give investors some income
             for (var investor of GameAssets[i].investors) {
-                Players.Players.get(investor)!.balance += GameAssets[i].value * (Math.random() * .25);
+                Players.Players.get(investor)!.balance += GameAssets[i].value * (Math.random() * .05);
             }
 
             // Recurring payment for workers
