@@ -54,6 +54,7 @@
         <button id="controlOption-sell"><b>Sell</b> one of my assets...</button>
         <button id="controlOption-hire"><b>Hire</b> workers...</button>
     </div>
+    <p id="bid-notifier"></p>
     <script>
         document.getElementById("user-header").innerText = `Make a choice, ${localStorage.getItem("userID")}`;
 
@@ -67,6 +68,7 @@
     </script>
     <script>
         const balance = document.getElementById("balance");
+        const bidNotifier = document.getElementById("bid-notifier");
 
         // WEB SOCKET
         const ws = new WebSocket("ws://{ADDRESS}:{PORT}/dealer");
@@ -78,7 +80,24 @@
                 balance.innerText = msg.payload[localStorage.getItem("userID")];
             } else if (msg.type = "assetRefresh") {
                 console.log("refresh!")
+            } else if (msg.type == "bids") {
+                for (var bid of msg.payload) {
+                    if (bid[2] == localStorage.getItem("userID")) {
+                        bidNotifier.style.display = "block";
+                        bidNotifier.innerText = `${msg.payload[1]} wants to buy ${msg.payload[0]} for $${msg.payload[3]} <span onclick="acceptBid(${msg.payload[0]})">Click to Accept?</span> <span onclick="bidNotifier.style.display = \"none\"">Click to Reject</span>`
+                    }
+                }
             }
+        }
+
+        function acceptBid(assetName) {
+            fetch(`/api/transaction/bid/${assetName}/accept`, {method: "POST"})
+            .then((res) => {
+                alert("Success!")
+            })
+            .catch((err) => {
+                alert("Whoops! An error occurred. Make sure that asset is owned by you.")
+            })
         }
     </script>
     <script>

@@ -20,6 +20,7 @@
     <a id="credit" href="https://github.com/GriffFerguson/conglomerate-1865" target="_blank" rel="noopener noreferrer">A game by Griffin Ferguson &copy; 2024</a>
     <script>
         const cards = document.getElementById("card-container");
+        const stats = document.getElementById("stats");
 
         const ws = new WebSocket("ws://{ADDRESS}:{PORT}/dealer");
         ws.onmessage = (msg) => {
@@ -27,7 +28,9 @@
 
             if(msg.type == "cardTick") {
                 cards.innerHTML = msg.payload;
-            } else if (msg.type == "statsTick")
+            } else if (msg.type == "statsTick") {
+                stats.innerHTML = msg.payload;
+            }
         }
     </script>
 </body>

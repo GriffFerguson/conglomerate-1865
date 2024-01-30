@@ -89,6 +89,17 @@ app.ws("/dealer", (ws, req) => {
         }
 
         ws.send(`{"type": "cardTick", "payload": "${cards.replace(/"/gm, "\\\"")}"}`);
+        
+        var statCards = "";
+        var bids = []
+        for (var asset of GameAssets) {
+            statCards += `<p>${asset.name}: $${asset.value}</p>`;
+            if (asset.bid != null) {
+                bids.push([asset.name, asset.bid[0], asset.bid[1], asset.bid[2]])
+            }
+        }
+        ws.send(`{"type": "statsTick", "payload": "${statCards.replace(/"/gm, "\\\"")}"}`);
+        ws.send(`{"type": "bids", "payload": "${JSON.stringify(bids)}"}`);
 
         var balances = "{";
         for (var player of Players.Players) {
