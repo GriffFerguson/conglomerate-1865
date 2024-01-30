@@ -1,0 +1,25 @@
+{
+  "name": "conglomerate",
+  "version": "1.0.0",
+  "description": "Simulate the conglomerations of the wild west",
+  "main": "index.js",
+  "scripts": {
+    "test": "tsc && node server/index.js"
+  },
+  "author": "Griffin Ferguson",
+  "license": "ISC",
+  "private": "true",
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/express-ws": "^3.0.4",
+    "@types/node": "^20.11.10",
+    "@types/qrcode": "^1.5.5",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "express-ws": "^5.0.2",
+    "my-local-ip": "^1.0.0",
+    "qrcode": "^1.5.3"
+  }
+}
