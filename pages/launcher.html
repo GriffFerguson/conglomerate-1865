@@ -17,12 +17,19 @@
         </div>
         <div id="joined">
             <p>Waiting Room</p>
+            <div id="player-list"></div>
         </div>
     </div>
     <div id="start-info">
         <p>Once everyone has joined, click "Start" to begin the game.</p>
         <button id="start">Start</button>
     </div>
-    
+    <script>
+        const ws = new WebSocket("ws://{ADDRESS}:{PORT}/waitingRoom");
+        const playerList = document.getElementById("player-list")
+        ws.onmessage = (e) => {
+            playerList.innerHTML = e.data;
+        }
+    </script>
 </body>
 </html>

@@ -28,6 +28,22 @@ p {
     margin: 0.2em;
 }
 
+button {
+    background-color: var(--title-gold);
+    color:white;
+    font-family: "Sanchez";
+    font-size: 1em;
+    padding: 1em 3em;
+    border: none;
+    outline: none;
+    border-radius: 20%;
+    cursor: pointer;
+}
+
+/* 
+ * 
+ */
+
 @font-face {
     font-family: "TexasTango";
     src: url(/static/fonts/texas_tango.otf);

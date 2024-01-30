@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conglomerate 1865</title>
+    <link rel="stylesheet" href="/static/styles/style.css">
+</head>
+<body>
+    <h1>Conglomerate 1865</h1>
+    <form id="join">
+        <input type="text" placeholder="Name">
+        <input type="submit" value="Join">
+        <p id="status"></p>
+    </form>
+    <script>
+        const status = document.getElementById("status");
+        document.getElementById("join").addEventListener("submit", (e) => {
+            e.preventDefault();
+            var name = escape(document.getElementsByTagName("input")[0].value);
+            status.innerText="Loading..."
+
+
+            fetch(`/api/addPlayer/${name}`, {method: "POST"})
+            .then((res) => {
+                status.innerText="Welcome to the game, " + name;
+                localStorage.setItem("userID", name);
+                // window.location.replace = "./play"
+            })
+        })
+    </script>
+</body>
+</html>

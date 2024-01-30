@@ -29,13 +29,22 @@
     align-items: center;
 }
 
-#start {
+#player-list {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+#player-list p {
     background-color: var(--title-gold);
     color:white;
     font-family: "Sanchez";
     font-size: 1em;
-    padding: 1em 3em;
+    padding: 1em 3.5em;
     border: none;
     outline: none;
     border-radius: 20%;
+    display: block;
+    width: min-content;
+    margin: 0.5em;
 }
