@@ -67,14 +67,54 @@ app.ws("/dealer", (ws, req) => {
     });
 
     setInterval(() => {
-        ws.send(`{"type": "assetRefresh", "payload": ${JSON.stringify(GameAssets)}}`)
+        var cards = "";
+        for (var player of Players.Players) {
+            var owned = [];
+            for (var asset of GameAssets) {
+                if (asset.owner == player[0]) owned.push(asset.name);
+            }
+            
+            var invested = [];
+            for (var asset of GameAssets) {
+                if (asset.investors.includes(player[0])) invested.push(asset.name);
+            }
+
+            var card = templates.playerCard({
+                name: player[0],
+                balance: player[1].balance,
+                owned: owned,
+                invested: invested
+            })
+            cards += card;
+        }
+        console.log(cards);
+
+        ws.send(`{"type": "cardTick", "payload": "${cards}"}`);
 
         var balances = "{";
         for (var player of Players.Players) {
-            balances += `"${player[0]}": ${player[1].balance},`;
+            balances += `"${player[0]}": ${Math.round(player[1].balance)},`;
         }
         balances = balances.replace(/.$/, "}");
-        ws.send(`{"type": "balanceUpdate", "payload": ${balances}}`)
+        ws.send(`{"type": "balanceUpdate", "payload": ${balances}}`);
+
+        // OMG THE GAME CODE!!!!!!!
+        for (var i = 0; i < GameAssets.length; i++) {
+            // Determine new value
+            GameAssets[i].trend = (Math.random() * 4) - 2
+            GameAssets[i].value += GameAssets[i].trend * GameAssets[i].size * (10000 + (Math.random() * 1000000))
+        
+            // Give investors some income
+            for (var investor of GameAssets[i].investors) {
+                Players.Players.get(investor)!.balance += GameAssets[i].value * (Math.random() * .25);
+            }
+
+            // Recurring payment for workers
+            if (GameAssets[i].owner != "") {
+                Players.Players.get(GameAssets[i].owner)!.balance -= 100 * GameAssets[i].size * 150
+            }
+        }
+
     }, 1000)
 })
 
@@ -84,6 +124,80 @@ app.post("/api/addPlayer/:name", (req, res) => {
     new Players.Player(req.params.name);
     res.end();
 })
-app.post("/api/transaction/buy/:player/:asset")
+app.post("/api/transaction/buy/:player/:asset", (req, res) => {
+    for (var i = 0; i < GameAssets.length; i++) {
+        if (GameAssets[i].name == req.params.asset && GameAssets[i].owner == "") {
+            res.writeHead(200);
+            GameAssets[i].owner = req.params.player;
+            GameAssets[i].investors = [];
+            Players.Players.get(req.params.player)!.balance -= GameAssets[i].value;
+            res.end();
+            return;
+        }
+    }
+    res.writeHead(404);
+})
+app.post("/api/transaction/invest/:player/:asset", (req, res) => {
+    for (var i = 0; i < GameAssets.length; i++) {
+        if (GameAssets[i].name == req.params.asset && !GameAssets[i].investors.includes(req.params.player) && GameAssets[i].owner == "") {
+            res.writeHead(200);
+            GameAssets[i].investors.push(req.params.player);
+            Players.Players.get(req.params.player)!.balance -= GameAssets[i].value * .2;
+            res.end();
+            return;
+        }
+    }
+    res.writeHead(404);
+})
+app.post("/api/transaction/bid/:player/:asset/create", (req, res) => {
+    for (var i = 0; i < GameAssets.length; i++) {
+        if (GameAssets[i].name == req.params.asset && GameAssets[i].owner != "" && GameAssets[i].owner != req.params.player) {
+            res.writeHead(200);
+            GameAssets[i].bid = [req.params.player, GameAssets[i].owner, GameAssets[i].value];
+            Players.Players.get(req.params.player)!.balance -= GameAssets[i].value * .02;
+            res.end();
+            return;
+        }
+    }
+    res.writeHead(404);
+})
+app.post("/api/transaction/bid/:asset/accept", (req, res) => {
+    for (var i = 0; i < GameAssets.length; i++) {
+        if (GameAssets[i].name == req.params.asset) {
+            res.writeHead(200);
+            Players.Players.get(GameAssets[i].bid![0])!.balance -= GameAssets[i].bid![2];
+            Players.Players.get(GameAssets[i].bid![1])!.balance += GameAssets[i].bid![2];
+            GameAssets[i].owner = GameAssets[i].bid![0]
+            GameAssets[i].bid = null;
+            res.end();
+            return;
+        }
+    }
+    res.writeHead(404);
+})
+app.post("/api/transaction/sell/:player/:asset", (req, res) => {
+    for (var i = 0; i < GameAssets.length; i++) {
+        if (GameAssets[i].name == req.params.asset && GameAssets[i].owner == req.params.player) {
+            res.writeHead(200);
+            Players.Players.get(req.params.player)!.balance += GameAssets[i].value;
+            GameAssets[i].owner = "";
+            res.end();
+            return;
+        }
+    }
+    res.writeHead(404);
+})
+app.post("/api/transaction/hire/:player/:asset/:amount", (req, res) => {
+    for (var i = 0; i < GameAssets.length; i++) {
+        if (GameAssets[i].name == req.params.asset && GameAssets[i].owner == req.params.player) {
+            res.writeHead(200);
+            Players.Players.get(GameAssets[i].bid![0])!.balance -= parseInt(req.params.amount) * 5000;
+            GameAssets[i].size += parseInt(req.params.amount) / 50;
+            res.end();
+            return;
+        }
+    }
+    res.writeHead(404);
+})
 
 app.listen(port)

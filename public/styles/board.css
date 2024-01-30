@@ -1,0 +1,31 @@
+/* body {
+    display:grid;
+    width: 100vw;
+    height: 100vh;
+    grid-template-columns: 75% 25%;
+}
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#map {
+    width: 100%;
+    aspect-ratio: 2800/1476;
+} */
+
+#card-container {
+    display:grid;
+    width: 95vw;
+    height: 95vh;
+    grid-template-columns: 25% 25% 25%;
+    margin:2.5vh 2.5vw;
+}
+
+.player-card {
+    width:100%;
+    border: 5px solid white;
+    background-color: black;
+}

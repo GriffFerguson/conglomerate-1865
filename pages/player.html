@@ -20,51 +20,39 @@
             </p>
             <p>There are 5 actions for you to perform to manage your money:
                 <br>- <b>Buy</b> a new asset: the small black dots on the map are far from fully-developed, but could hold lots of money for lucky investors
-                <br>- <b>Invest</b> in an existing asset: you've gotta start somewhere; put some money into an existing business, and get some passive income
+                <br>- <b>Invest</b> in an existing asset: you've gotta start somewhere; put some money into an existing business, and get some passive income <b>Note: investing costs 20% of the asset's normal value</b>
                 <br>- <b>Bid</b> on a competitor's asset: it takes aggression to gain control, perhaps a monetary incentive will help you get control of assets <b>Note: a 2% fee is applied to all bids, rejected or not</b>
                 <br>- <b>Sell</b> an owned asset: sometimes it's best to abandon ship, and in that case sell-away!
-                <br>- <b>Hire</b> workers: your owned business won't grow by itself; if you stop hiring workers, your business's growth will crawl to a standstill <b>Note: as a business's value decreases, its workers will start quitting</b>
+                <br>- <b>Hire</b> workers: your owned business won't grow by itself; if you stop hiring workers, your business's growth will crawl to a standstill <b>Note: each worker requires a $5000 downpayment and a $150 recurring fee</b>
                 <br>Start off by investing. Get some passive income, then start buying up assets.
             </p>
             <!-- <p>
                 Use the icons on the host device to measure a good investment and a bad investment. The value of an asset/investment constantly fluctuates; a green icon means the value is increasing, a red icon means it's decreasing; the size of the dot indicates how much the item is worth, with larger dots meaning more value.
             </p> -->
-            <p>Now enough with the instructions! You've got $10,000,000 and a map covered in investments; get to work!</p>
+            <p>Now enough with the instructions! You've got $10,000,000 and a large set of investments; get to work!</p>
             <button id="close-notif">Let's go!</button>
         </div>
     </div>
     <h1 id="user-header"></h1>
     <p id="balance-indicator">Your balance: $<span id="balance"></span></p>
+    <label for="assets">Select an asset: </label>
+    <select title="assets" id="selector">
+        <option value="Birmingham, Alabama">Birmingham, Alabama</option>
+        <option value="Memphis, Tennessee">Memphis, Tennessee</option>
+        <option value="Richmond, Virginia">Richmond, Virginia</option>
+        <option value="R. H. Macy">R. H. Macy</option>
+        <option value="Sears, Roebuck and Co.">Sears, Roebuck and Co.</option>
+        <option value="Montgomery Ward">Montgomery Ward</option>
+        <option value="American Railroad Association">American Railroad Association</option>
+        <option value="Standard Oil">Standard Oil</option>
+        <option value="United States Steel">United States Steel</option>
+    </select>
     <div id="control-panel">
         <button id="controlOption-buy"><b>Buy</b> a new asset...</button>
         <button id="controlOption-invest"><b>Invest</b> in an existing asset...</button>
         <button id="controlOption-bid"><b>Bid</b> on a competitor's asset...</button>
         <button id="controlOption-sell"><b>Sell</b> one of my assets...</button>
         <button id="controlOption-hire"><b>Hire</b> workers...</button>
-    </div>
-    <!-- CONTROL MENUS -->
-    <div id="control-menu-wrapper">
-        <button id="exit-control">Close</button>
-        <div id="controlMenu-buy" class="control-menu">
-            <h2>Buy</h2>
-            <select title="assets" data-menu="buy"></select>
-        </div>
-        <div id="controlMenu-invest" class="control-menu">
-            <h2>Invest</h2>
-            <select title="assets" data-menu="invest"></select>
-        </div>
-        <div id="controlMenu-bid" class="control-menu">
-            <h2>Bid</h2>
-            <select title="assets" data-menu="bid"></select>
-        </div>
-        <div id="controlMenu-sell" class="control-menu">
-            <h2>Sell</h2>
-            <select title="assets" data-menu="sell"></select>
-        </div>
-        <div id="controlMenu-hire" class="control-menu">
-            <h2>Hire</h2>
-            <select title="assets" data-menu="hire"></select>
-        </div>
     </div>
     <script>
         document.getElementById("user-header").innerText = `Make a choice, ${localStorage.getItem("userID")}`;
@@ -103,61 +91,53 @@
             sell: document.getElementById("controlOption-sell"),
             hire: document.getElementById("controlOption-hire"),
         }
-        const controlMenuWrapper = document.getElementById("control-menu-wrapper");
-        const controlMenuExit = document.getElementById("exit-control");
-        const controlMenus = {
-            buy: document.getElementById("controlMenu-buy"),
-            invest: document.getElementById("controlMenu-invest"),
-            bid: document.getElementById("controlMenu-bid"),
-            sell: document.getElementById("controlMenu-sell"),
-            hire: document.getElementById("controlMenu-hire"),
-        }
+        const selector = document.getElementById("selector")
 
-        controlMenuExit.addEventListener("click", (e) => {
-            controlMenus.buy.style.display = "none";
-            controlMenus.invest.style.display = "none";
-            controlMenus.bid.style.display = "none";
-            controlMenus.sell.style.display = "none";
-            controlMenus.hire.style.display = "none";
-            controlMenuWrapper.style.opacity = "0%";
-            setTimeout(() => {
-                controlMenuWrapper.style.display = "none";
-            }, 800)
-        })
-
-        // BUY
         controls.buy.addEventListener("click", (e) => {
-            controlMenus.buy.style.display = "flex";
-            controlMenuWrapper.style.display = "block";
-            controlMenuWrapper.style.opacity = "100%";
+            fetch(`/api/transaction/buy/${localStorage.getItem("userID")}/${selector.value}`, {method: "POST"})
+            .then((res) => {
+                alert("Success!")
+            })
+            .catch((err) => {
+                alert("Whoops! An error occurred. Make sure that asset is unowned.")
+            })
         })
-        
-        // INVEST
         controls.invest.addEventListener("click", (e) => {
-            controlMenus.invest.style.display = "flex";
-            controlMenuWrapper.style.display = "block";
-            controlMenuWrapper.style.opacity = "100%";
+            fetch(`/api/transaction/invest/${localStorage.getItem("userID")}/${selector.value}`, {method: "POST"})
+            .then((res) => {
+                alert("Success!")
+            })
+            .catch((err) => {
+                alert("Whoops! An error occurred. Make sure that asset is unowned and you're not already an investor.")
+            })
         })
-        
-        // BID
         controls.bid.addEventListener("click", (e) => {
-            controlMenus.bid.style.display = "flex";
-            controlMenuWrapper.style.display = "block";
-            controlMenuWrapper.style.opacity = "100%";
+            fetch(`/api/transaction/bid/${localStorage.getItem("userID")}/${selector.value}/create`, {method: "POST"})
+            .then((res) => {
+                alert("Success!")
+            })
+            .catch((err) => {
+                alert("Whoops! An error occurred. Make sure that item is owned by someone other than you.")
+            })
         })
-        
-        // SELL
         controls.sell.addEventListener("click", (e) => {
-            controlMenus.sell.style.display = "flex";
-            controlMenuWrapper.style.display = "block";
-            controlMenuWrapper.style.opacity = "100%";
+            fetch(`/api/transaction/sell/${localStorage.getItem("userID")}/${selector.value}`, {method: "POST"})
+            .then((res) => {
+                alert("Success!")
+            })
+            .catch((err) => {
+                alert("Whoops! An error occurred. Make sure that item is owned by you.")
+            })
         })
-
-        // HIRE
         controls.hire.addEventListener("click", (e) => {
-            controlMenus.hire.style.display = "flex";
-            controlMenuWrapper.style.display = "block";
-            controlMenuWrapper.style.opacity = "100%";
+            var amount = prompt("How many workers?")
+            fetch(`/api/transaction/sell/${localStorage.getItem("userID")}/${selector.value}/${amount}`, {method: "POST"})
+            .then((res) => {
+                alert("Success!")
+            })
+            .catch((err) => {
+                alert("Whoops! An error occurred. Make sure that item is owned by you.")
+            })
         })
     </script>
 </body>

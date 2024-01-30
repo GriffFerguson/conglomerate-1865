@@ -6,7 +6,6 @@ class Player {
     constructor(name) {
         this.name = name;
         this.balance = 10000000;
-        this.investedAssets = [];
         if (!exports.Players.has(name))
             exports.Players.set(name, this);
     }

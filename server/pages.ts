@@ -26,6 +26,5 @@ toDataURL(`http://${address}:${port}`, {errorCorrectionLevel: "L"}, (err, code) 
 
 // Pug templates
 export const templates = {
-    playerCard: compileFile(join(__dirname, "../templates/playerCard.pug")),
-    assetGraphic: compileFile(join(__dirname, "../templates/assetGraphic.pug"))
+    playerCard: compileFile(join(__dirname, "../templates/playerCard.pug"))
 }

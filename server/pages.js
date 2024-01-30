@@ -24,6 +24,5 @@ exports.pages = {
 });
 // Pug templates
 exports.templates = {
-    playerCard: (0, pug_1.compileFile)((0, path_1.join)(__dirname, "../templates/playerCard.pug")),
-    assetGraphic: (0, pug_1.compileFile)((0, path_1.join)(__dirname, "../templates/assetGraphic.pug"))
+    playerCard: (0, pug_1.compileFile)((0, path_1.join)(__dirname, "../templates/playerCard.pug"))
 };

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conglomerate 1865 Map</title>
+    <link rel="stylesheet" href="/static/styles/style.css">
+    <link rel="stylesheet" href="/static/styles/board.css">
+</head>
+<body>
+    <!-- <div class="wrapper">
+        <svg id="map" viewBox="0 0 2800 1476" xmlns="http://www.w3.org/2000/svg" draggable="false">
+            <image href="/static/images/map.png" width="2800" height="1476" draggable="false" />
+            <g id="asset-icons"></g>
+        </svg>
+    </div>
+    <div class="wrapper" id="stats"></div> -->
+    <div id="card-container"></div>
+    <a id="credit" href="https://github.com/GriffFerguson/conglomerate-1865" target="_blank" rel="noopener noreferrer">A game by Griffin Ferguson &copy; 2024</a>
+    <script>
+        const cards = document.getElementById("card-container");
+
+        const ws = new WebSocket("ws://{ADDRESS}:{PORT}/dealer");
+        ws.onmessage = (msg) => {
+            msg = JSON.parse(msg.data)
+
+            if(msg.type == "cardTick") {
+                cards.innerHTML = msg.payload;
+            }
+        }
+    </script>
+</body>
+</html>

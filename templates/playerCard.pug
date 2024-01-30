@@ -1,10 +1,17 @@
-div(id="playerCard" + name, class="player-card")
+div(id="playerCard-" + name, class="player-card")
     h2 #{name}
     p
         b Balance: 
         span #{balance}
     p 
-        b Assets: 
-        span #{assetCount}
+        b Asset Count (Owned):
+        span #{owned.length}
     p 
         b Rank: #{rank}
+    h2 Currently owns: 
+    ul 
+        each asset in owned 
+            li= asset
+    h2 Investing in:
+        each asset in invested 
+            li= asset
