@@ -24,12 +24,19 @@
         <p>Once everyone has joined, click "Start" to begin the game.</p>
         <button id="start">Start</button>
     </div>
+    <a id="credit" href="https://github.com/GriffFerguson/conglomerate-1865" target="_blank" rel="noopener noreferrer">A game by Griffin Ferguson &copy; 2024</a>
     <script>
         const ws = new WebSocket("ws://{ADDRESS}:{PORT}/waitingRoom");
         const playerList = document.getElementById("player-list")
         ws.onmessage = (e) => {
             playerList.innerHTML = e.data;
         }
+
+        document.getElementById("start").addEventListener("click", (e) => {
+            ws.send("start");
+            ws.close();
+            window.location.replace("./board");
+        })
     </script>
 </body>
 </html>

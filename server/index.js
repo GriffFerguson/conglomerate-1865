@@ -28,43 +28,31 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const express_ws_1 = __importDefault(require("express-ws"));
-const path_1 = require("path");
-const fs_1 = require("fs");
-const qrcode_1 = require("qrcode");
 const Players = __importStar(require("./playerData"));
 const events_1 = require("events");
+const pages_1 = require("./pages");
+const gameAssets_1 = require("./gameAssets");
 const gameEvent = new events_1.EventEmitter();
 var app = (0, express_ws_1.default)((0, express_1.default)()).app;
-const port = 8080;
-const address = require("my-local-ip")();
-function readPage(filename) {
-    return (0, fs_1.readFileSync)((0, path_1.join)(__dirname, `../pages/${filename}.html`), { encoding: "utf-8" })
-        .replace(/\{ADDRESS\}/gm, address)
-        .replace(/\{PORT\}/gm, port.toString());
-}
-const pages = {
-    launcher: readPage("launcher"),
-    playerJoin: readPage("player_join"),
-    gameBoard: readPage("game_board"),
-    playerSeat: readPage("player")
-};
-(0, qrcode_1.toDataURL)(`http://${address}:${port}`, { errorCorrectionLevel: "L" }, (err, code) => {
-    pages.launcher = pages.launcher.replace("{QRCODE}", code);
-});
 // Serve static files
 app.use("/static", express_1.default.static("public"));
 // Start game
 app.get("/", (req, res) => {
     res.writeHead(200);
-    res.end(pages.playerJoin);
+    res.end(pages_1.pages.playerJoin);
 });
 app.get("/launcher", (req, res) => {
     res.writeHead(200);
-    res.end(pages.launcher);
+    res.end(pages_1.pages.launcher);
 });
 // Game media
 app.get("/board", (req, res) => {
-    res.end("works");
+    res.writeHead(200);
+    res.end(pages_1.pages.gameBoard);
+});
+app.get("/play", (req, res) => {
+    res.writeHead(200);
+    res.end(pages_1.pages.playerSeat);
 });
 // WebSocket Handler
 app.ws("/waitingRoom", (ws, req) => {
@@ -83,13 +71,20 @@ app.ws("/waitingRoom", (ws, req) => {
     });
 });
 app.ws("/game-sync", (ws, req) => {
+});
+app.ws("/dealer", (ws, req) => {
     gameEvent.on("gameStart", () => {
         ws.send("start_game");
     });
-});
-app.ws("/dealer", (ws, req) => {
-});
-app.ws("/game-board", (ws, req) => {
+    setInterval(() => {
+        ws.send(`{"type": "assetRefresh", "payload": ${JSON.stringify(gameAssets_1.GameAssets)}}`);
+        var balances = "{";
+        for (var player of Players.Players) {
+            balances += `"${player[0]}": ${player[1].balance},`;
+        }
+        balances = balances.replace(/.$/, "}");
+        ws.send(`{"type": "balanceUpdate", "payload": ${balances}}`);
+    }, 1000);
 });
 // API
 app.post("/api/addPlayer/:name", (req, res) => {
@@ -97,4 +92,5 @@ app.post("/api/addPlayer/:name", (req, res) => {
     new Players.Player(req.params.name);
     res.end();
 });
-app.listen(port);
+app.post("/api/transaction/buy/:player/:asset");
+app.listen(pages_1.port);

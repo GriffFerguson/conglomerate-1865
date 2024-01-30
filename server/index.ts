@@ -1,33 +1,13 @@
 import express from "express";
 import expressWs from "express-ws";
-import {join} from "path";
-import { readFileSync } from "fs";
-import {toDataURL} from "qrcode";
 import * as Players from "./playerData";
 import { EventEmitter } from "events";
+import {pages, templates , port} from "./pages";
+import { GameAssets, Asset } from "./gameAssets";
 
 const gameEvent = new EventEmitter();
 
 var app = expressWs(express()).app;
-const port = 8080;
-const address = require("my-local-ip")();
-
-function readPage(filename: string): string {
-    return readFileSync(join(__dirname, `../pages/${filename}.html`), {encoding: "utf-8"})
-        .replace(/\{ADDRESS\}/gm, address)
-        .replace(/\{PORT\}/gm, port.toString());
-}
-
-const pages = {
-    launcher: readPage("launcher"),
-    playerJoin: readPage("player_join"),
-    gameBoard: readPage("game_board"),
-    playerSeat: readPage("player")
-}
-
-toDataURL(`http://${address}:${port}`, {errorCorrectionLevel: "L"}, (err, code) => {
-    pages.launcher = pages.launcher.replace("{QRCODE}", code);
-})
 
 // Serve static files
 app.use("/static", express.static("public"));
@@ -45,7 +25,13 @@ app.get("/launcher", (req, res) => {
 
 // Game media
 app.get("/board", (req, res) => {
-    res.end("works")
+    res.writeHead(200);
+    res.end(pages.gameBoard);
+})
+
+app.get("/play", (req, res) => {
+    res.writeHead(200);
+    res.end(pages.playerSeat);
 })
 
 // WebSocket Handler
@@ -67,17 +53,29 @@ app.ws("/waitingRoom", (ws, req) => {
 })
 
 app.ws("/game-sync", (ws, req) => {
+    
+})
+
+interface WebSocketMsg {
+    type: string
+    payload: Array<Asset> | any 
+}
+
+app.ws("/dealer", (ws, req) => {
     gameEvent.on("gameStart", () => {
         ws.send("start_game");
     });
-})
 
-app.ws("/dealer", (ws, req) => {
+    setInterval(() => {
+        ws.send(`{"type": "assetRefresh", "payload": ${JSON.stringify(GameAssets)}}`)
 
-})
-
-app.ws("/game-board", (ws, req) => {
-
+        var balances = "{";
+        for (var player of Players.Players) {
+            balances += `"${player[0]}": ${player[1].balance},`;
+        }
+        balances = balances.replace(/.$/, "}");
+        ws.send(`{"type": "balanceUpdate", "payload": ${balances}}`)
+    }, 1000)
 })
 
 // API
@@ -86,5 +84,6 @@ app.post("/api/addPlayer/:name", (req, res) => {
     new Players.Player(req.params.name);
     res.end();
 })
+app.post("/api/transaction/buy/:player/:asset")
 
 app.listen(port)

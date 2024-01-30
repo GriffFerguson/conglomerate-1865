@@ -21,6 +21,17 @@ h1 {
     text-align: center;
 }
 
+h2 {
+    font-size: 3rem;
+    font-weight: bold;
+    font-family: "Buffalo", serif;
+    color: white;
+    letter-spacing: 0.11ch;
+    margin: 1.4vh 0;
+    width: 100%;
+    text-align: center;
+}
+
 p {
     color:white;
     font-size: 1em;
